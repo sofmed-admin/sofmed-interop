@@ -1,0 +1,93 @@
+---
+title: 'Testing'
+description: 'Cómo probar tu implementación del estándar Sofmed Interop.'
+---
+
+# Testing
+
+## Estrategia de pruebas
+
+Recomendamos una estrategia de pruebas en tres niveles:
+
+### 1. Pruebas unitarias
+
+Valida que tu sistema genera recursos FHIR correctos:
+- Los recursos cumplen con los perfiles Sofmed
+- Los campos obligatorios están presentes
+- Los códigos son válidos
+- Las referencias entre recursos son correctas
+
+### 2. Pruebas de integración
+
+Verifica la comunicación entre tu sistema y un servidor FHIR:
+- Envío exitoso de Bundles
+- Consulta de recursos
+- Actualización de estados
+- Manejo correcto de errores
+
+### 3. Pruebas de extremo a extremo
+
+Simula el flujo completo de referencia y contrareferencia:
+- IPS genera referencia → EPS autoriza → IPS destino recibe → Atención → Contrareferencia
+
+## Servidor FHIR de pruebas
+
+### HAPI FHIR Server (local)
+
+Levanta un servidor FHIR local con Docker:
+
+```bash
+docker run -p 8080:8080 hapiproject/hapi:latest
+```
+
+El servidor estará disponible en `http://localhost:8080/fhir`.
+
+### Servidor público de pruebas
+
+HAPI FHIR ofrece un servidor público para pruebas:
+
+```
+https://hapi.fhir.org/baseR4
+```
+
+> ⚠️ No envíes datos reales a servidores públicos de pruebas.
+
+## Casos de prueba sugeridos
+
+### Caso 1: Referencia exitosa
+
+1. Crear Bundle de referencia con datos válidos
+2. Enviar `POST /fhir/Bundle`
+3. Verificar respuesta 201 con IDs asignados
+4. Consultar `GET /fhir/ServiceRequest/{id}`
+5. Verificar status = `draft`
+
+### Caso 2: Autorización
+
+1. Obtener ServiceRequest en status `draft`
+2. Actualizar a `active` con IPS destino
+3. Verificar que el performer está asignado
+4. Verificar extensión de número de autorización
+
+### Caso 3: Validación de errores
+
+1. Enviar Bundle sin Patient → Esperar error 422
+2. Enviar ServiceRequest sin reasonCode → Esperar error 400
+3. Usar código CUPS inválido → Esperar error 422
+4. Enviar sin token → Esperar error 401
+
+### Caso 4: Contrareferencia
+
+1. Tener un ServiceRequest en status `accepted`
+2. Crear Bundle de contrareferencia
+3. Enviar y verificar que el status cambia a `completed`
+4. Verificar que la IPS origen y EPS reciben la contrareferencia
+
+## Herramientas de testing
+
+| Herramienta | Uso |
+|------------|-----|
+| **Postman** | Pruebas manuales de API |
+| **FHIR Validator CLI** | Validación de recursos contra perfiles |
+| **Inferno** | Suite de pruebas de conformidad FHIR |
+| **Touchstone** | Plataforma de testing FHIR |

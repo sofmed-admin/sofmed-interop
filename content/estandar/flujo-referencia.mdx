@@ -1,0 +1,74 @@
+---
+title: 'Flujo de Referencia'
+description: 'Flujo completo del proceso de referencia usando el estándar Sofmed Interop.'
+---
+
+# Flujo de Referencia
+
+## Descripción general
+
+El flujo de referencia describe el proceso desde que un profesional de salud en una IPS determina que el paciente necesita ser remitido a otra institución, hasta que la IPS destino confirma la recepción.
+
+## Actores
+
+- **IPS Origen** — Institución que genera la referencia
+- **EPS** — Entidad que autoriza la referencia
+- **IPS Destino** — Institución que recibe al paciente
+
+## Pasos del flujo
+
+### 1. Generación de la referencia
+
+El médico tratante en la IPS origen determina que el paciente requiere atención que no puede proveer. Genera un **Bundle de referencia** que incluye:
+
+- `Patient` — Datos del paciente
+- `ServiceRequest` — Solicitud con diagnóstico, motivo y servicio requerido
+- `Encounter` — Encuentro clínico actual
+- `Practitioner` — Médico que refiere
+- `Organization` — IPS origen
+
+### 2. Envío a la EPS
+
+La IPS origen envía el Bundle a la EPS para autorización:
+
+```
+POST /fhir/Bundle
+Content-Type: application/fhir+json
+```
+
+El `ServiceRequest.status` se establece como `draft`.
+
+### 3. Autorización por la EPS
+
+La EPS recibe la solicitud, la evalúa y:
+
+- **Autoriza** → Actualiza `ServiceRequest.status` a `active` y asigna la IPS destino
+- **Rechaza** → Actualiza `ServiceRequest.status` a `revoked` con motivo
+- **Solicita información adicional** → Actualiza `ServiceRequest.status` a `on-hold`
+
+### 4. Notificación a las IPS
+
+- La **IPS origen** recibe la actualización del estado
+- La **IPS destino** recibe el Bundle completo con la referencia autorizada
+
+### 5. Recepción en IPS destino
+
+La IPS destino confirma la recepción actualizando el `ServiceRequest.status` a `accepted`.
+
+## Estados del ServiceRequest
+
+```
+draft → active → accepted → completed
+  │        │
+  │        └→ on-hold → active
+  └→ revoked
+```
+
+| Estado | Significado |
+|--------|------------|
+| `draft` | Referencia creada, pendiente de autorización |
+| `active` | Referencia autorizada por la EPS |
+| `on-hold` | Pendiente de información adicional |
+| `accepted` | Recibida por la IPS destino |
+| `completed` | Atención finalizada (se genera contrareferencia) |
+| `revoked` | Rechazada por la EPS |

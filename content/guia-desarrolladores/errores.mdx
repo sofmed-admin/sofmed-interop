@@ -1,0 +1,88 @@
+---
+title: 'Manejo de Errores'
+description: 'Códigos de error y manejo de errores en Sofmed Interop.'
+---
+
+# Manejo de Errores
+
+## OperationOutcome
+
+FHIR usa el recurso `OperationOutcome` para comunicar errores. Toda respuesta de error incluye este recurso:
+
+```json
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "required",
+      "details": {
+        "text": "El campo ServiceRequest.reasonCode es obligatorio"
+      },
+      "expression": ["ServiceRequest.reasonCode"]
+    }
+  ]
+}
+```
+
+## Campos del OperationOutcome
+
+| Campo | Descripción |
+|-------|------------|
+| `severity` | `fatal`, `error`, `warning`, `information` |
+| `code` | Código del tipo de error (ver tabla abajo) |
+| `details.text` | Descripción legible del error |
+| `expression` | Ruta del campo que causó el error |
+
+## Códigos de error comunes
+
+### Errores de validación (HTTP 400/422)
+
+| Código | Descripción | Ejemplo |
+|--------|------------|---------|
+| `required` | Campo obligatorio faltante | `ServiceRequest.reasonCode` no presente |
+| `value` | Valor inválido | Código CUPS inexistente |
+| `code-invalid` | Código no pertenece al ValueSet | Tipo de documento no reconocido |
+| `structure` | Estructura del recurso inválida | JSON malformado |
+| `invariant` | Regla de negocio violada | Bundle sin Patient |
+
+### Errores de autenticación (HTTP 401/403)
+
+| Código | Descripción | Solución |
+|--------|------------|---------|
+| `login` | Token inválido | Obtener un nuevo token |
+| `expired` | Token expirado | Renovar el token |
+| `forbidden` | Sin permisos | Verificar scopes del token |
+
+### Errores del servidor (HTTP 500)
+
+| Código | Descripción | Acción |
+|--------|------------|--------|
+| `exception` | Error interno | Reintentar después. Reportar si persiste |
+| `timeout` | Timeout | Reintentar con backoff exponencial |
+
+## Mejores prácticas
+
+### Reintentos
+
+Para errores transitorios (5xx, timeouts), implementa reintentos con backoff exponencial:
+
+```
+Intento 1: esperar 1 segundo
+Intento 2: esperar 2 segundos
+Intento 3: esperar 4 segundos
+Máximo: 3 reintentos
+```
+
+### Logging
+
+Registra siempre:
+- Timestamp de la petición
+- Endpoint y método HTTP
+- Código de respuesta HTTP
+- `OperationOutcome` completo si hay error
+- ID de correlación si existe
+
+### Validación local
+
+Valida los recursos **antes** de enviarlos para evitar errores 400/422. Usa las [herramientas de validación](/docs/estandar/validacion) disponibles.

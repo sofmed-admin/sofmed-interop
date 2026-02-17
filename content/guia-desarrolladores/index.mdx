@@ -1,0 +1,56 @@
+---
+title: 'Guía para Desarrolladores'
+description: 'Guía técnica para implementar el estándar Sofmed Interop.'
+---
+
+# Guía para Desarrolladores
+
+## Bienvenido
+
+Esta guía está dirigida a desarrolladores e ingenieros que van a implementar el estándar Sofmed Interop en los sistemas de información de una EPS o IPS.
+
+## Prerrequisitos
+
+- Conocimiento de **REST APIs** y **JSON**
+- Familiaridad básica con **FHIR R4** (o disposición a aprenderlo)
+- Acceso al sistema de información de tu organización
+- Un entorno de desarrollo con un cliente HTTP
+
+## Recursos FHIR que debes conocer
+
+| Recurso | Cuándo lo usas |
+|---------|---------------|
+| [Patient](/docs/estandar/perfiles-fhir/patient) | Siempre — datos del paciente |
+| [ServiceRequest](/docs/estandar/perfiles-fhir/service-request) | Siempre — la solicitud de referencia |
+| [Encounter](/docs/estandar/perfiles-fhir/encounter) | Siempre — el encuentro clínico |
+| [Organization](/docs/estandar/perfiles-fhir/organization) | Siempre — IPS y EPS |
+| [Practitioner](/docs/estandar/perfiles-fhir/practitioner) | Siempre — profesional de salud |
+| [Bundle](/docs/estandar/perfiles-fhir/bundle) | Siempre — paquete de la referencia |
+
+## Flujo técnico resumido
+
+```
+1. Autenticarse → Obtener token OAuth 2.0
+2. Construir Bundle → Crear recursos FHIR según perfiles Sofmed
+3. Validar → Verificar conformidad con perfiles
+4. Enviar → POST /fhir/Bundle
+5. Consultar → GET /fhir/ServiceRequest/{id}
+6. Actualizar → PUT /fhir/ServiceRequest/{id}
+```
+
+## Secciones
+
+- [Autenticación](/docs/guia-desarrolladores/autenticacion) — Cómo autenticarse
+- [Endpoints](/docs/guia-desarrolladores/endpoints) — Endpoints disponibles
+- [Ejemplos JSON](/docs/guia-desarrolladores/ejemplos-json) — Payloads de ejemplo
+- [Manejo de errores](/docs/guia-desarrolladores/errores) — Códigos y manejo
+- [Testing](/docs/guia-desarrolladores/testing) — Cómo probar tu implementación
+
+## Librerías recomendadas
+
+| Lenguaje | Librería | Enlace |
+|----------|----------|--------|
+| Java | HAPI FHIR | [hapifhir.io](https://hapifhir.io/) |
+| .NET | Firely SDK | [fire.ly/fhir-sdk](https://fire.ly/products/firely-sdk/) |
+| Python | fhir.resources | [PyPI](https://pypi.org/project/fhir.resources/) |
+| JavaScript | fhir-kit-client | [npm](https://www.npmjs.com/package/fhir-kit-client) |

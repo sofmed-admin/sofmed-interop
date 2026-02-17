@@ -1,0 +1,77 @@
+---
+title: 'Inicio Rápido para Desarrolladores'
+description: 'Guía rápida para desarrolladores que van a implementar el estándar FHIR.'
+---
+
+# Inicio Rápido para Desarrolladores
+
+Esta guía te lleva desde cero hasta tu primera referencia FHIR en minutos.
+
+## Prerrequisitos
+
+- Conocimiento básico de REST APIs y JSON
+- Un cliente HTTP (cURL, Postman, o similar)
+- Familiaridad básica con FHIR es útil pero no requerida
+
+## Tu primera referencia en 5 pasos
+
+### Paso 1: Entender la estructura
+
+Una referencia en Sofmed Interop es un **Bundle FHIR** que contiene:
+
+```json
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    { "resource": { "resourceType": "Patient", "..." : "..." } },
+    { "resource": { "resourceType": "ServiceRequest", "..." : "..." } },
+    { "resource": { "resourceType": "Encounter", "..." : "..." } },
+    { "resource": { "resourceType": "Practitioner", "..." : "..." } },
+    { "resource": { "resourceType": "Organization", "..." : "..." } }
+  ]
+}
+```
+
+### Paso 2: Revisar los perfiles
+
+Cada recurso en el Bundle debe conformar con los perfiles Sofmed:
+- [Patient Colombia](/docs/estandar/perfiles-fhir/patient)
+- [ServiceRequest Referencia](/docs/estandar/perfiles-fhir/service-request)
+- [Encounter](/docs/estandar/perfiles-fhir/encounter)
+- [Organization](/docs/estandar/perfiles-fhir/organization)
+
+### Paso 3: Autenticación
+
+Revisa el esquema de [autenticación](/docs/guia-desarrolladores/autenticacion) requerido para interactuar con sistemas conformes al estándar.
+
+### Paso 4: Enviar la referencia
+
+```bash
+POST /fhir/Bundle
+Content-Type: application/fhir+json
+Authorization: Bearer {token}
+
+{
+  // Bundle de referencia completo
+}
+```
+
+### Paso 5: Verificar
+
+Consulta el estado de la referencia:
+
+```bash
+GET /fhir/ServiceRequest/{id}
+Authorization: Bearer {token}
+```
+
+## Herramientas útiles
+
+- **HAPI FHIR Server** — Servidor FHIR de código abierto para pruebas locales
+- **FHIR Validator** — Valida que tus recursos cumplan los perfiles Sofmed
+- **Postman Collection** — Colección de ejemplo (próximamente)
+
+## Siguiente paso
+
+→ Continúa con la [Guía completa para Desarrolladores](/docs/guia-desarrolladores)

@@ -1,0 +1,73 @@
+---
+title: 'Terminologías'
+description: 'CodeSystems y ValueSets colombianos usados en el estándar Sofmed Interop.'
+---
+
+# Terminologías
+
+Sofmed Interop define y utiliza vocabularios controlados (CodeSystems y ValueSets) adaptados al contexto colombiano.
+
+## Tipos de documento de identidad
+
+**CodeSystem:** `https://sofmed.co/fhir/CodeSystem/tipo-documento`
+
+| Código | Descripción |
+|--------|------------|
+| `CC` | Cédula de Ciudadanía |
+| `TI` | Tarjeta de Identidad |
+| `CE` | Cédula de Extranjería |
+| `PA` | Pasaporte |
+| `RC` | Registro Civil |
+| `MS` | Menor sin identificación |
+| `NV` | Certificado de nacido vivo |
+| `PE` | Permiso Especial de Permanencia |
+| `PPT` | Permiso por Protección Temporal |
+
+## Códigos de procedimientos (CUPS)
+
+**CodeSystem:** `https://sofmed.co/fhir/CodeSystem/cups`
+
+Se utilizan los códigos CUPS vigentes según la resolución del Ministerio de Salud. Ejemplos:
+
+| Código | Descripción |
+|--------|------------|
+| `890301` | Consulta de primera vez por medicina especializada |
+| `890302` | Consulta de control por medicina especializada |
+| `871121` | Radiografía de tórax |
+
+## Diagnósticos (CIE-10)
+
+**CodeSystem:** `http://hl7.org/fhir/sid/icd-10`
+
+Se usa la clasificación CIE-10 estándar. El estándar no redefine estos códigos sino que los referencia directamente.
+
+## Niveles de complejidad IPS
+
+**CodeSystem:** `https://sofmed.co/fhir/CodeSystem/nivel-complejidad`
+
+| Código | Descripción |
+|--------|------------|
+| `1` | Baja complejidad |
+| `2` | Mediana complejidad |
+| `3` | Alta complejidad |
+
+## Motivo de referencia
+
+**CodeSystem:** `https://sofmed.co/fhir/CodeSystem/motivo-referencia`
+
+| Código | Descripción |
+|--------|------------|
+| `capacidad` | Falta de capacidad instalada |
+| `especialidad` | Requiere especialidad no disponible |
+| `tecnologia` | Requiere tecnología no disponible |
+| `urgencia` | Urgencia vital que requiere nivel superior |
+
+## ValueSets
+
+Los ValueSets agrupan códigos de uno o más CodeSystems para uso en validación:
+
+| ValueSet | Descripción | Uso |
+|----------|------------|-----|
+| `tipo-documento-vs` | Tipos de documento válidos | `Patient.identifier.type` |
+| `motivo-referencia-vs` | Motivos de referencia válidos | `ServiceRequest.reasonCode` |
+| `nivel-complejidad-vs` | Niveles de complejidad | `Organization.extension` |

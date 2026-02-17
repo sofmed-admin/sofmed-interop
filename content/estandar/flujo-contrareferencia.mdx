@@ -1,0 +1,64 @@
+---
+title: 'Flujo de Contrareferencia'
+description: 'Flujo del proceso de contrareferencia en el estándar Sofmed Interop.'
+---
+
+# Flujo de Contrareferencia
+
+## Descripción general
+
+La contrareferencia es el proceso mediante el cual la IPS destino, una vez finalizada la atención, envía de vuelta a la IPS origen un resumen de la atención prestada y las recomendaciones de seguimiento.
+
+## Actores
+
+- **IPS Destino** — Institución que atendió al paciente y genera la contrareferencia
+- **EPS** — Entidad que recibe copia para trazabilidad
+- **IPS Origen** — Institución que recibe la contrareferencia para continuidad del cuidado
+
+## Pasos del flujo
+
+### 1. Finalización de la atención
+
+El profesional de salud en la IPS destino completa la atención del paciente referido y documenta:
+
+- Diagnósticos confirmados
+- Procedimientos realizados
+- Plan de seguimiento
+- Medicamentos formulados
+- Recomendaciones para la IPS origen
+
+### 2. Generación del Bundle de contrareferencia
+
+La IPS destino genera un Bundle que incluye:
+
+- `ServiceRequest` original con `status: completed`
+- `Encounter` — Encuentro de la atención prestada
+- `Practitioner` — Profesional que atendió
+- Recursos adicionales según la atención (DiagnosticReport, MedicationRequest, etc.)
+
+### 3. Envío de la contrareferencia
+
+```
+POST /fhir/Bundle
+Content-Type: application/fhir+json
+```
+
+El Bundle se envía a:
+- **IPS Origen** — Para continuidad del cuidado
+- **EPS** — Para trazabilidad y cierre del ciclo
+
+### 4. Recepción y cierre
+
+La IPS origen recibe la contrareferencia y la integra en la historia clínica del paciente. El ciclo de referencia-contrareferencia queda cerrado.
+
+## Datos mínimos de la contrareferencia
+
+| Dato | Recurso FHIR | Obligatorio |
+|------|--------------|-------------|
+| Diagnóstico final | `Encounter.diagnosis` | ✅ |
+| Procedimientos realizados | `Encounter.serviceType` | ✅ |
+| Plan de seguimiento | `ServiceRequest.note` | ✅ |
+| Medicamentos | `MedicationRequest` | Si aplica |
+| Resultados de exámenes | `DiagnosticReport` | Si aplica |
+| Fecha de atención | `Encounter.period` | ✅ |
+| Profesional que atendió | `Practitioner` | ✅ |

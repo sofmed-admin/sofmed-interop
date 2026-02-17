@@ -1,0 +1,88 @@
+---
+title: 'Autenticación'
+description: 'Esquema de autenticación y seguridad del estándar Sofmed Interop.'
+---
+
+# Autenticación y Seguridad
+
+## Esquema de autenticación
+
+Sofmed Interop recomienda **OAuth 2.0** con el flujo **Client Credentials** para comunicación servidor-a-servidor entre sistemas de EPS e IPS.
+
+## Flujo Client Credentials
+
+```
+┌──────────┐                        ┌────────────────┐
+│ Tu sistema│                        │ Servidor OAuth  │
+│ (Cliente) │                        │ (Authorization) │
+└─────┬────┘                        └───────┬────────┘
+      │                                     │
+      │  1. POST /oauth/token               │
+      │  client_id + client_secret           │
+      │ ────────────────────────────────────→│
+      │                                     │
+      │  2. access_token (JWT)              │
+      │ ←────────────────────────────────────│
+      │                                     │
+      │  3. GET /fhir/ServiceRequest        │
+      │  Authorization: Bearer {token}       │
+      │ ────────────────────────────────────→│ Servidor FHIR
+      │                                     │
+```
+
+## Obtener un token
+
+```bash
+POST /oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id={tu_client_id}
+&client_secret={tu_client_secret}
+&scope=fhir.read fhir.write
+```
+
+Respuesta:
+
+```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIs...",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "scope": "fhir.read fhir.write"
+}
+```
+
+## Usar el token
+
+Incluye el token en el header `Authorization` de cada petición:
+
+```bash
+GET /fhir/ServiceRequest/12345
+Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
+Content-Type: application/fhir+json
+```
+
+## Scopes recomendados
+
+| Scope | Descripción |
+|-------|------------|
+| `fhir.read` | Lectura de recursos FHIR |
+| `fhir.write` | Escritura y actualización de recursos |
+| `fhir.search` | Búsqueda de recursos |
+
+## Seguridad
+
+### Requisitos mínimos
+
+- **HTTPS obligatorio** — Toda comunicación debe ser sobre TLS 1.2+
+- **Tokens de corta duración** — Los tokens deben expirar (recomendado: 1 hora)
+- **Rotación de secretos** — Los client secrets deben rotarse periódicamente
+- **Logs de auditoría** — Registrar toda petición con timestamp, cliente y acción
+
+### Recomendaciones
+
+- Implementar rate limiting para evitar abuso
+- Usar IP whitelisting cuando sea posible
+- Monitorear intentos de autenticación fallidos
+- Cifrar datos sensibles en reposo

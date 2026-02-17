@@ -1,0 +1,96 @@
+---
+title: 'Endpoints'
+description: 'Endpoints del estándar Sofmed Interop para referencia y contrareferencia.'
+---
+
+# Endpoints
+
+## URL base
+
+Cada organización expone su servidor FHIR en una URL base. Ejemplo:
+
+```
+https://fhir.mi-ips.com.co/fhir
+```
+
+## Endpoints principales
+
+### Bundle (Referencia completa)
+
+| Método | Endpoint | Descripción |
+|--------|----------|------------|
+| `POST` | `/fhir/Bundle` | Enviar un Bundle de referencia o contrareferencia |
+
+### ServiceRequest (Solicitud de referencia)
+
+| Método | Endpoint | Descripción |
+|--------|----------|------------|
+| `GET` | `/fhir/ServiceRequest/{id}` | Obtener una solicitud por ID |
+| `GET` | `/fhir/ServiceRequest?{params}` | Buscar solicitudes |
+| `PUT` | `/fhir/ServiceRequest/{id}` | Actualizar estado de una solicitud |
+
+### Patient
+
+| Método | Endpoint | Descripción |
+|--------|----------|------------|
+| `GET` | `/fhir/Patient/{id}` | Obtener paciente por ID |
+| `GET` | `/fhir/Patient?identifier={doc}` | Buscar paciente por documento |
+
+### Organization
+
+| Método | Endpoint | Descripción |
+|--------|----------|------------|
+| `GET` | `/fhir/Organization/{id}` | Obtener organización por ID |
+| `GET` | `/fhir/Organization?identifier={nit}` | Buscar por NIT |
+
+## Parámetros de búsqueda
+
+### ServiceRequest
+
+| Parámetro | Tipo | Ejemplo |
+|-----------|------|---------|
+| `status` | token | `?status=active` |
+| `subject` | reference | `?subject=Patient/123` |
+| `requester` | reference | `?requester=Practitioner/456` |
+| `performer` | reference | `?performer=Organization/789` |
+| `authored` | date | `?authored=ge2024-01-01` |
+| `priority` | token | `?priority=urgent` |
+| `code` | token | `?code=890301` |
+
+### Patient
+
+| Parámetro | Tipo | Ejemplo |
+|-----------|------|---------|
+| `identifier` | token | `?identifier=CC\|1234567890` |
+| `name` | string | `?name=García` |
+| `birthdate` | date | `?birthdate=1985-03-15` |
+
+## Códigos de respuesta HTTP
+
+| Código | Significado |
+|--------|------------|
+| `200` | OK — Recurso encontrado o actualizado |
+| `201` | Created — Recurso creado exitosamente |
+| `400` | Bad Request — Error en la solicitud (validación) |
+| `401` | Unauthorized — Token inválido o expirado |
+| `403` | Forbidden — Sin permisos para esta acción |
+| `404` | Not Found — Recurso no encontrado |
+| `422` | Unprocessable Entity — Error de negocio |
+| `500` | Internal Server Error — Error del servidor |
+
+## Paginación
+
+Para resultados de búsqueda, el servidor devuelve Bundles paginados:
+
+```json
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 150,
+  "link": [
+    { "relation": "self", "url": "/fhir/ServiceRequest?status=active&_page=1" },
+    { "relation": "next", "url": "/fhir/ServiceRequest?status=active&_page=2" }
+  ],
+  "entry": [...]
+}
+```

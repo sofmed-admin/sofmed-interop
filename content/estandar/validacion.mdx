@@ -1,0 +1,78 @@
+---
+title: 'Validación'
+description: 'Cómo validar que tu implementación cumple con el estándar Sofmed Interop.'
+---
+
+# Validación
+
+## ¿Por qué validar?
+
+La validación asegura que los recursos FHIR que tu sistema genera o consume cumplen con los perfiles definidos por Sofmed Interop. Esto garantiza interoperabilidad real entre sistemas.
+
+## Tipos de validación
+
+### 1. Validación estructural
+
+Verifica que los recursos FHIR tengan la estructura correcta:
+- Campos obligatorios presentes
+- Tipos de datos correctos
+- Cardinalidades respetadas
+
+### 2. Validación de terminologías
+
+Verifica que los códigos usados pertenezcan a los ValueSets definidos:
+- Tipo de documento de identidad válido
+- Códigos CUPS existentes
+- Diagnósticos CIE-10 válidos
+
+### 3. Validación de negocio
+
+Verifica reglas de negocio específicas del estándar:
+- Un ServiceRequest debe tener al menos un diagnóstico
+- El Bundle de referencia debe incluir Patient y ServiceRequest
+- La contrareferencia debe referenciar la referencia original
+
+## Herramientas de validación
+
+### FHIR Validator (HL7)
+
+El validador oficial de HL7 puede usarse con los StructureDefinitions de Sofmed:
+
+```bash
+java -jar validator_cli.jar mi-recurso.json \
+  -ig sofmed-interop-ig \
+  -profile https://sofmed.co/fhir/StructureDefinition/SofmedServiceRequest
+```
+
+### Validación programática
+
+Con la librería HAPI FHIR (Java):
+
+```java
+FhirValidator validator = ctx.newValidator();
+validator.registerValidatorModule(new FhirInstanceValidator(ctx));
+ValidationResult result = validator.validateWithResult(resource);
+```
+
+Con fhir.resources (Python):
+
+```python
+from fhir.resources.servicerequest import ServiceRequest
+
+sr = ServiceRequest.parse_raw(json_string)
+# La validación ocurre automáticamente al parsear
+```
+
+## Niveles de conformidad
+
+| Nivel | Descripción | Requisitos |
+|-------|------------|------------|
+| **Básico** | Envío y recepción de Bundles FHIR válidos | Validación estructural |
+| **Intermedio** | Uso correcto de terminologías Sofmed | Validación estructural + terminologías |
+| **Completo** | Cumplimiento total del estándar | Todas las validaciones + flujos completos |
+
+## Próximamente
+
+- Servidor de validación en línea
+- Suite de pruebas automatizadas
+- Certificación de conformidad

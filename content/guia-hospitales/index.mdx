@@ -1,0 +1,46 @@
+---
+title: 'Guía para Hospitales e IPS'
+description: 'Guía completa para hospitales e IPS sobre el estándar Sofmed Interop.'
+---
+
+# Guía para Hospitales e IPS
+
+## El rol del hospital en el estándar
+
+Los hospitales e IPS son los actores que **generan y reciben** referencias. Sofmed Interop estandariza cómo se estructura, envía y recibe la información clínica en este proceso.
+
+## Beneficios para tu hospital
+
+- **Información completa del paciente** — Recibe datos clínicos estructurados, evitando repetir exámenes
+- **Envío estandarizado** — Genera referencias con todos los datos necesarios desde el inicio
+- **Trazabilidad** — Sabe en todo momento el estado de las referencias enviadas
+- **Menos rechazos** — Información completa reduce las devoluciones por la EPS
+- **Contrareferencia ágil** — Formato claro para devolver la información a la IPS de origen
+
+## Roles del hospital
+
+### Como IPS remisora (origen)
+
+Cuando tu hospital necesita referir un paciente:
+1. Genera el Bundle de referencia con los datos clínicos
+2. Envía a la EPS para autorización
+3. Hace seguimiento del estado
+
+→ [Cómo enviar una referencia](/docs/guia-hospitales/enviar-referencia)
+
+### Como IPS receptora (destino)
+
+Cuando tu hospital recibe un paciente referido:
+1. Recibe el Bundle con la información del paciente
+2. Confirma la recepción
+3. Atiende al paciente
+4. Genera la contrareferencia
+
+→ [Cómo recibir una referencia](/docs/guia-hospitales/recibir-referencia)
+
+## Secciones de esta guía
+
+- [Enviar referencia](/docs/guia-hospitales/enviar-referencia) — Cómo generar y enviar
+- [Recibir referencia](/docs/guia-hospitales/recibir-referencia) — Cómo recibir y procesar
+- [Contrareferencia](/docs/guia-hospitales/contrareferencia) — Cómo generar la contrareferencia
+- [Checklist de adopción](/docs/guia-hospitales/checklist-adopcion) — Evaluación de preparación

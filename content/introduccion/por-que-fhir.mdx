@@ -1,0 +1,60 @@
+---
+title: '¿Por qué FHIR R4?'
+description: 'Razones por las cuales el estándar se basa en HL7 FHIR R4.'
+---
+
+# ¿Por qué FHIR R4?
+
+## ¿Qué es FHIR?
+
+**FHIR** (Fast Healthcare Interoperability Resources) es un estándar desarrollado por [HL7 International](https://www.hl7.org/) para el intercambio electrónico de información de salud. **R4** es la versión normativa más estable y ampliamente adoptada a nivel mundial.
+
+## Razones de la elección
+
+### 1. Estándar internacional probado
+
+FHIR R4 es usado en:
+- **Estados Unidos** — Mandado por la regla CMS/ONC para interoperabilidad
+- **Unión Europea** — Adoptado en el European Health Data Space
+- **América Latina** — Implementaciones en Brasil, Chile, Argentina y más
+
+### 2. Basado en tecnologías web modernas
+
+A diferencia de estándares anteriores (HL7 v2, CDA), FHIR utiliza:
+- **REST APIs** — Familiar para cualquier desarrollador web
+- **JSON y XML** — Formatos de datos estándar
+- **OAuth 2.0** — Autenticación moderna
+
+### 3. Modular y extensible
+
+FHIR trabaja con **Recursos** (Resources) que representan conceptos clínicos:
+- `Patient` — Información del paciente
+- `ServiceRequest` — Solicitud de referencia
+- `Encounter` — Encuentro clínico
+- `Organization` — Institución de salud
+
+Cada recurso puede ser **extendido** con campos adicionales para el contexto colombiano sin romper compatibilidad.
+
+### 4. Perfiles para contexto local
+
+FHIR permite crear **Perfiles** (Profiles) que restringen y especializan los recursos base para un caso de uso específico. Sofmed Interop define perfiles adaptados a:
+- Identificación colombiana (CC, TI, CE, etc.)
+- Códigos CUPS para procedimientos
+- Códigos CIE-10 para diagnósticos
+- Clasificación de IPS por nivel de complejidad
+- Códigos de EPS según la Superintendencia Nacional de Salud
+
+### 5. Ecosistema y herramientas
+
+FHIR cuenta con un ecosistema maduro:
+- **Servidores FHIR** de código abierto (HAPI FHIR, Microsoft FHIR Server)
+- **Validadores** para verificar conformidad de los recursos
+- **Librerías cliente** en múltiples lenguajes (Java, .NET, Python, JavaScript)
+- **Herramientas de testing** como Touchstone e Inferno
+
+### 6. Alineación con la tendencia regional
+
+Países de la región están adoptando FHIR como base para sus estándares nacionales de interoperabilidad. Adoptar FHIR R4 ahora posiciona a Colombia para:
+- Interoperabilidad transfronteriza futura
+- Acceso a herramientas y talento existente
+- Compatibilidad con estándares internacionales de calidad

@@ -1,0 +1,96 @@
+---
+title: 'Patient — Perfil Colombia'
+description: 'Perfil FHIR Patient adaptado al contexto colombiano para Sofmed Interop.'
+---
+
+# Patient — Perfil Colombia
+
+## Descripción
+
+El perfil `SofmedPatient` extiende el recurso FHIR `Patient` para incluir la identificación y datos demográficos relevantes en el contexto colombiano.
+
+**URL del perfil:** `https://sofmed.co/fhir/StructureDefinition/SofmedPatient`
+
+## Campos obligatorios
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `identifier` | `Identifier[]` | Al menos un documento de identidad colombiano |
+| `identifier.type` | `CodeableConcept` | Tipo de documento (CC, TI, CE, etc.) |
+| `identifier.value` | `string` | Número del documento |
+| `name` | `HumanName[]` | Nombre completo del paciente |
+| `gender` | `code` | Sexo biológico (`male`, `female`, `other`, `unknown`) |
+| `birthDate` | `date` | Fecha de nacimiento |
+
+## Campos recomendados
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `telecom` | `ContactPoint[]` | Teléfono o correo de contacto |
+| `address` | `Address[]` | Dirección de residencia |
+| `managingOrganization` | `Reference(Organization)` | EPS a la que está afiliado |
+
+## Extensiones Sofmed
+
+### Régimen de afiliación
+
+```json
+{
+  "url": "https://sofmed.co/fhir/Extension/regimen-afiliacion",
+  "valueCode": "contributivo"
+}
+```
+
+Valores posibles: `contributivo`, `subsidiado`, `especial`, `no-afiliado`
+
+## Ejemplo
+
+```json
+{
+  "resourceType": "Patient",
+  "meta": {
+    "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedPatient"]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://sofmed.co/fhir/CodeSystem/tipo-documento",
+            "code": "CC",
+            "display": "Cédula de Ciudadanía"
+          }
+        ]
+      },
+      "value": "1234567890"
+    }
+  ],
+  "name": [
+    {
+      "family": "García Martínez",
+      "given": ["María", "Fernanda"]
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1985-03-15",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "+573001234567"
+    }
+  ],
+  "address": [
+    {
+      "city": "Bogotá",
+      "state": "Cundinamarca",
+      "country": "CO"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://sofmed.co/fhir/Extension/regimen-afiliacion",
+      "valueCode": "contributivo"
+    }
+  ]
+}
+```

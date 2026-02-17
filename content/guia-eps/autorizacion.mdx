@@ -1,0 +1,71 @@
+---
+title: 'Autorización'
+description: 'Flujo de autorización de referencias para EPS en Sofmed Interop.'
+---
+
+# Autorización de Referencias
+
+## Flujo de autorización
+
+Cuando una IPS envía una referencia, la EPS debe evaluarla y tomar una decisión.
+
+### 1. Recepción de la solicitud
+
+La EPS recibe un Bundle FHIR con un `ServiceRequest` en estado `draft`. El Bundle incluye:
+- Datos del paciente
+- Diagnóstico y motivo de la referencia
+- Servicio solicitado (código CUPS)
+- Información del médico remitente
+
+### 2. Validación automática
+
+El sistema de la EPS puede validar automáticamente:
+- ¿El paciente está afiliado y activo?
+- ¿El servicio solicitado está cubierto por el PBS?
+- ¿La información clínica está completa?
+- ¿El nivel de complejidad es apropiado?
+
+### 3. Decisión
+
+| Decisión | Acción FHIR | Descripción |
+|----------|-------------|------------|
+| **Autorizar** | `ServiceRequest.status = active` | Se asigna IPS destino y número de autorización |
+| **Rechazar** | `ServiceRequest.status = revoked` | Se incluye motivo del rechazo |
+| **Pedir más info** | `ServiceRequest.status = on-hold` | Se solicita información adicional a la IPS |
+
+### 4. Notificación
+
+La EPS notifica a:
+- **IPS origen** — La decisión tomada
+- **IPS destino** (si fue autorizada) — El Bundle completo de la referencia
+
+## Tiempos esperados
+
+| Prioridad | Tiempo máximo de respuesta |
+|-----------|---------------------------|
+| `stat` (emergencia) | Inmediato |
+| `asap` (urgente) | 2 horas |
+| `urgent` (prioritario) | 24 horas |
+| `routine` (rutina) | 5 días hábiles |
+
+## Campos clave para la autorización
+
+Al autorizar, la EPS debe actualizar:
+
+```json
+{
+  "resourceType": "ServiceRequest",
+  "status": "active",
+  "performer": [
+    {
+      "reference": "Organization/ips-destino-asignada"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://sofmed.co/fhir/Extension/numero-autorizacion",
+      "valueString": "AUTH-2024-001234"
+    }
+  ]
+}
+```

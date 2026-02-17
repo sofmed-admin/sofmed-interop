@@ -1,0 +1,33 @@
+---
+title: 'Guía para EPS'
+description: 'Guía completa para entidades promotoras de salud sobre el estándar Sofmed Interop.'
+---
+
+# Guía para EPS
+
+## El rol de la EPS en el estándar
+
+En el flujo de referencia y contrareferencia, la EPS actúa como **coordinador y autorizador**. Sofmed Interop estandariza cómo la EPS recibe solicitudes, autoriza referencias y hace seguimiento del proceso.
+
+## Beneficios para tu EPS
+
+- **Autorización más rápida** — Datos estructurados permiten validación automática
+- **Trazabilidad completa** — Visibilidad en tiempo real del estado de cada referencia
+- **Reportes consistentes** — Datos estandarizados facilitan la generación de indicadores
+- **Reducción de glosas** — Información clínica completa desde el inicio
+- **Cumplimiento normativo** — Alineado con la regulación colombiana
+
+## Responsabilidades de la EPS en el estándar
+
+1. **Recibir** solicitudes de referencia en formato FHIR
+2. **Validar** que la solicitud contenga la información requerida
+3. **Autorizar o rechazar** la referencia actualizando el `ServiceRequest`
+4. **Asignar** la IPS destino cuando corresponda
+5. **Monitorear** el ciclo completo hasta la contrareferencia
+
+## Secciones de esta guía
+
+- [Autorización](/docs/guia-eps/autorizacion) — Cómo funciona el flujo de autorización
+- [Seguimiento](/docs/guia-eps/seguimiento) — Cómo hacer seguimiento de las referencias
+- [Reportes](/docs/guia-eps/reportes) — Indicadores y reportes disponibles
+- [Checklist de adopción](/docs/guia-eps/checklist-adopcion) — Evaluación de preparación

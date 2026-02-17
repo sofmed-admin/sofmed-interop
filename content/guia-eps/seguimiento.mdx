@@ -1,0 +1,71 @@
+---
+title: 'Seguimiento'
+description: 'Cómo hacer seguimiento de referencias como EPS con Sofmed Interop.'
+---
+
+# Seguimiento de Referencias
+
+## Visibilidad del ciclo completo
+
+Con Sofmed Interop, la EPS tiene visibilidad sobre cada etapa del proceso de referencia:
+
+```
+Solicitud → Autorización → Recepción IPS → Atención → Contrareferencia
+  draft        active        accepted      in-progress   completed
+```
+
+## Consultar estado de una referencia
+
+```bash
+GET /fhir/ServiceRequest/{id}
+Authorization: Bearer {token}
+```
+
+La respuesta incluye el `status` actual y toda la información asociada.
+
+## Consultar todas las referencias
+
+### Por estado
+
+```bash
+GET /fhir/ServiceRequest?status=active
+```
+
+### Por paciente
+
+```bash
+GET /fhir/ServiceRequest?subject=Patient/{id}
+```
+
+### Por fecha
+
+```bash
+GET /fhir/ServiceRequest?authored=ge2024-01-01&authored=le2024-01-31
+```
+
+### Por IPS origen
+
+```bash
+GET /fhir/ServiceRequest?requester:Organization={id}
+```
+
+## Alertas y notificaciones
+
+El estándar recomienda que los sistemas implementen notificaciones para:
+
+| Evento | Prioridad |
+|--------|-----------|
+| Nueva solicitud de referencia | Alta |
+| Referencia no atendida en plazo | Alta |
+| Contrareferencia recibida | Media |
+| Solicitud de información adicional sin respuesta | Alta |
+| Referencia completada | Baja |
+
+## Indicadores de seguimiento
+
+| Indicador | Cómo calcular |
+|-----------|--------------|
+| Tiempo promedio de autorización | `authorized_date - authored_date` |
+| Referencias pendientes | `ServiceRequest?status=draft` count |
+| Tasa de rechazo | `revoked / total * 100` |
+| Tiempo total del ciclo | `completed_date - authored_date` |

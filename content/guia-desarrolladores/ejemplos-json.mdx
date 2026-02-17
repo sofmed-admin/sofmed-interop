@@ -1,0 +1,188 @@
+---
+title: 'Ejemplos JSON'
+description: 'Ejemplos de payloads FHIR para referencia y contrareferencia.'
+---
+
+# Ejemplos JSON
+
+## Referencia completa (Bundle)
+
+Este es un ejemplo completo de un Bundle de referencia listo para enviar:
+
+```json
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "timestamp": "2024-01-15T10:30:00-05:00",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-001",
+      "resource": {
+        "resourceType": "Patient",
+        "meta": {
+          "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedPatient"]
+        },
+        "identifier": [{
+          "type": {
+            "coding": [{
+              "system": "https://sofmed.co/fhir/CodeSystem/tipo-documento",
+              "code": "CC",
+              "display": "Cédula de Ciudadanía"
+            }]
+          },
+          "value": "1234567890"
+        }],
+        "name": [{ "family": "García Martínez", "given": ["María", "Fernanda"] }],
+        "gender": "female",
+        "birthDate": "1985-03-15",
+        "telecom": [{ "system": "phone", "value": "+573001234567" }],
+        "address": [{ "city": "Bogotá", "state": "Cundinamarca", "country": "CO" }],
+        "extension": [{
+          "url": "https://sofmed.co/fhir/Extension/regimen-afiliacion",
+          "valueCode": "contributivo"
+        }]
+      },
+      "request": { "method": "POST", "url": "Patient" }
+    },
+    {
+      "fullUrl": "urn:uuid:sr-001",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "meta": {
+          "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedServiceRequest"]
+        },
+        "status": "draft",
+        "intent": "order",
+        "priority": "urgent",
+        "code": {
+          "coding": [{
+            "system": "https://sofmed.co/fhir/CodeSystem/cups",
+            "code": "890301",
+            "display": "Consulta de primera vez por medicina especializada"
+          }]
+        },
+        "subject": { "reference": "urn:uuid:patient-001" },
+        "requester": { "reference": "urn:uuid:pract-001" },
+        "reasonCode": [{
+          "coding": [{
+            "system": "http://hl7.org/fhir/sid/icd-10",
+            "code": "I10",
+            "display": "Hipertensión esencial (primaria)"
+          }]
+        }],
+        "authoredOn": "2024-01-15T10:30:00-05:00",
+        "note": [{
+          "text": "Paciente con hipertensión arterial no controlada a pesar de tratamiento. Requiere valoración por cardiología para ajuste terapéutico."
+        }],
+        "extension": [{
+          "url": "https://sofmed.co/fhir/Extension/motivo-referencia",
+          "valueCoding": {
+            "system": "https://sofmed.co/fhir/CodeSystem/motivo-referencia",
+            "code": "especialidad",
+            "display": "Requiere especialidad no disponible"
+          }
+        }]
+      },
+      "request": { "method": "POST", "url": "ServiceRequest" }
+    },
+    {
+      "fullUrl": "urn:uuid:enc-001",
+      "resource": {
+        "resourceType": "Encounter",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "subject": { "reference": "urn:uuid:patient-001" },
+        "participant": [{ "individual": { "reference": "urn:uuid:pract-001" } }],
+        "period": {
+          "start": "2024-01-15T10:00:00-05:00",
+          "end": "2024-01-15T10:30:00-05:00"
+        },
+        "serviceProvider": { "reference": "urn:uuid:org-001" }
+      },
+      "request": { "method": "POST", "url": "Encounter" }
+    },
+    {
+      "fullUrl": "urn:uuid:pract-001",
+      "resource": {
+        "resourceType": "Practitioner",
+        "identifier": [{
+          "type": {
+            "coding": [{
+              "system": "https://sofmed.co/fhir/CodeSystem/tipo-documento",
+              "code": "CC"
+            }]
+          },
+          "value": "9876543210"
+        }],
+        "name": [{ "family": "López Rodríguez", "given": ["Carlos", "Andrés"], "prefix": ["Dr."] }],
+        "qualification": [{
+          "code": {
+            "coding": [{
+              "system": "https://sofmed.co/fhir/CodeSystem/especialidad",
+              "code": "medicina-general",
+              "display": "Medicina General"
+            }]
+          }
+        }]
+      },
+      "request": { "method": "POST", "url": "Practitioner" }
+    },
+    {
+      "fullUrl": "urn:uuid:org-001",
+      "resource": {
+        "resourceType": "Organization",
+        "identifier": [{
+          "system": "https://sofmed.co/fhir/NamingSystem/nit",
+          "value": "900123456-7"
+        }],
+        "active": true,
+        "type": [{
+          "coding": [{
+            "system": "https://sofmed.co/fhir/CodeSystem/tipo-organizacion",
+            "code": "ips",
+            "display": "Institución Prestadora de Servicios de Salud"
+          }]
+        }],
+        "name": "Centro de Salud Villa del Prado"
+      },
+      "request": { "method": "POST", "url": "Organization" }
+    }
+  ]
+}
+```
+
+## Autorización de referencia (EPS)
+
+```json
+{
+  "resourceType": "ServiceRequest",
+  "id": "sr-001",
+  "status": "active",
+  "intent": "order",
+  "performer": [{
+    "reference": "Organization/hospital-destino-001"
+  }],
+  "extension": [{
+    "url": "https://sofmed.co/fhir/Extension/numero-autorizacion",
+    "valueString": "AUTH-2024-001234"
+  }]
+}
+```
+
+## Rechazo de referencia (EPS)
+
+```json
+{
+  "resourceType": "ServiceRequest",
+  "id": "sr-001",
+  "status": "revoked",
+  "intent": "order",
+  "note": [{
+    "text": "Rechazada: el servicio solicitado está disponible en la IPS de origen."
+  }]
+}
+```

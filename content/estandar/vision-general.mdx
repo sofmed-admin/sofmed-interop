@@ -1,0 +1,76 @@
+---
+title: 'Visión General'
+description: 'Arquitectura y visión general del estándar Sofmed Interop.'
+---
+
+# Visión General del Estándar
+
+## Arquitectura
+
+Sofmed Interop define un conjunto de **perfiles FHIR R4**, **flujos de trabajo** y **terminologías** que permiten el intercambio estandarizado de información en los procesos de referencia y contrareferencia.
+
+## Componentes principales
+
+### 1. Perfiles FHIR
+
+Cada recurso FHIR base es **perfilado** (restringido y extendido) para el contexto colombiano:
+
+| Recurso FHIR | Uso en Sofmed Interop |
+|--------------|----------------------|
+| `Patient` | Paciente con identificación colombiana (CC, TI, CE, etc.) |
+| `ServiceRequest` | Solicitud de referencia con datos clínicos |
+| `Encounter` | Encuentro clínico que origina o atiende la referencia |
+| `Organization` | EPS o IPS participante |
+| `Practitioner` | Profesional de salud involucrado |
+| `Bundle` | Paquete que agrupa todos los recursos de una referencia |
+
+→ Ver detalle en [Perfiles FHIR](/docs/estandar/perfiles-fhir)
+
+### 2. Flujos de trabajo
+
+El estándar define dos flujos principales:
+
+- **[Referencia](/docs/estandar/flujo-referencia)** — Desde la solicitud hasta la recepción en la IPS destino
+- **[Contrareferencia](/docs/estandar/flujo-contrareferencia)** — Desde la atención hasta el retorno del paciente
+
+### 3. Terminologías
+
+Vocabularios controlados adaptados a Colombia:
+- Tipos de documento de identidad
+- Códigos CUPS para procedimientos
+- Códigos CIE-10 para diagnósticos
+- Clasificación de niveles de complejidad
+- Códigos de EPS e IPS
+
+→ Ver detalle en [Terminologías](/docs/estandar/terminologias)
+
+### 4. Validación
+
+Mecanismos para verificar que una implementación cumple con el estándar:
+- Validación de perfiles con StructureDefinitions
+- Validación de terminologías con ValueSets
+- Pruebas de conformidad
+
+→ Ver detalle en [Validación](/docs/estandar/validacion)
+
+## Diagrama de alto nivel
+
+```
+┌─────────────┐    Referencia (Bundle FHIR)    ┌─────────────┐
+│  IPS Origen │ ──────────────────────────────→ │ IPS Destino │
+│  (Hospital) │                                 │  (Hospital) │
+└──────┬──────┘                                 └──────┬──────┘
+       │                                               │
+       │  Autorización                                 │
+       ▼                                               │
+┌─────────────┐    Contrareferencia (Bundle)    │
+│     EPS     │ ←──────────────────────────────────────┘
+└─────────────┘
+```
+
+## Principios de diseño
+
+1. **Mínima fricción** — Solo los campos estrictamente necesarios son obligatorios
+2. **Extensibilidad** — Se pueden agregar campos adicionales sin romper compatibilidad
+3. **Alineación normativa** — Compatible con la regulación colombiana vigente
+4. **Pragmatismo** — Diseñado para ser implementable con tecnologías actuales

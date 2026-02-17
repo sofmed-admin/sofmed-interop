@@ -1,0 +1,59 @@
+---
+title: 'Preguntas Frecuentes'
+description: 'Preguntas frecuentes sobre el estándar Sofmed Interop.'
+---
+
+# Preguntas Frecuentes
+
+## Generales
+
+### ¿Sofmed Interop es un software o plataforma?
+
+**No.** Sofmed Interop es un **estándar abierto** — una especificación técnica que define cómo deben intercambiarse los datos de referencia y contrareferencia. No es un producto de software ni una plataforma que debas comprar o instalar.
+
+### ¿Es obligatorio adoptar este estándar?
+
+Actualmente, Sofmed Interop es una **propuesta voluntaria**. Sin embargo, al estar basado en FHIR R4 y alineado con la normatividad colombiana, facilita el cumplimiento de requisitos regulatorios existentes y futuros.
+
+### ¿Necesito reemplazar mi sistema actual?
+
+**No.** El estándar define una **capa de interoperabilidad**. Tu sistema actual puede seguir funcionando internamente como lo hace hoy. Solo necesitas agregar la capacidad de enviar y recibir datos en formato FHIR cuando interactúas con otras instituciones.
+
+### ¿Cuánto cuesta implementar?
+
+El estándar es **gratuito y abierto**. Los costos de implementación dependen de la complejidad de tu sistema actual y de los recursos técnicos que dediques. El estándar está diseñado para minimizar la barrera de entrada.
+
+## Técnicas
+
+### ¿Necesito un servidor FHIR completo?
+
+**No necesariamente.** Puedes implementar solo los endpoints necesarios para enviar y recibir Bundles de referencia. No necesitas un servidor FHIR completo si tu caso de uso no lo requiere.
+
+### ¿Qué pasa si mi sistema usa HL7 v2 o CDA?
+
+Puedes construir un adaptador que transforme los datos entre tu formato actual y FHIR R4. Las librerías FHIR disponibles facilitan esta conversión.
+
+### ¿Los datos viajan por internet?
+
+Los datos se intercambian a través de APIs REST sobre **HTTPS** (cifrado). El estándar no define la infraestructura de red, pero requiere que toda comunicación sea segura.
+
+### ¿Cómo manejo la concurrencia?
+
+FHIR soporta control de concurrencia optimista mediante el campo `meta.versionId` y el header `If-Match`. Esto evita que dos sistemas modifiquen el mismo recurso simultáneamente.
+
+## Sobre FHIR
+
+### ¿Qué tan difícil es aprender FHIR?
+
+Si tienes experiencia con REST APIs y JSON, FHIR es relativamente sencillo de aprender. Los conceptos son intuitivos: Patient es un paciente, Encounter es un encuentro, etc. La curva de aprendizaje está principalmente en entender los perfiles y extensiones.
+
+### ¿FHIR R4 va a quedar obsoleto?
+
+FHIR R4 es una **versión normativa** (estable). Aunque ya existe R5, R4 seguirá siendo soportado por años. Es la versión más adoptada mundialmente y la base de regulaciones en múltiples países.
+
+### ¿Dónde puedo aprender más sobre FHIR?
+
+- [Especificación oficial de FHIR R4](https://hl7.org/fhir/R4/)
+- [FHIR DevDays](https://www.devdays.com/) — Conferencia anual
+- [FHIR Chat (Zulip)](https://chat.fhir.org/) — Comunidad activa
+- [Curso de Coursera sobre FHIR](https://www.coursera.org/learn/fhir-interoperability)

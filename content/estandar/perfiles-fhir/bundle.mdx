@@ -1,0 +1,184 @@
+---
+title: 'Bundle — Paquete de Referencia'
+description: 'Perfil FHIR Bundle para agrupar los recursos de una referencia en Sofmed Interop.'
+---
+
+# Bundle — Paquete de Referencia
+
+## Descripción
+
+El perfil `SofmedReferralBundle` define la estructura del Bundle que agrupa todos los recursos necesarios para enviar una referencia o contrareferencia completa.
+
+**URL del perfil:** `https://sofmed.co/fhir/StructureDefinition/SofmedReferralBundle`
+
+## Estructura
+
+Un Bundle de referencia debe incluir como mínimo:
+
+| Recurso | Obligatorio | Descripción |
+|---------|-------------|------------|
+| `Patient` | ✅ | Datos del paciente |
+| `ServiceRequest` | ✅ | Solicitud de referencia |
+| `Encounter` | ✅ | Encuentro clínico de origen |
+| `Practitioner` | ✅ | Médico que refiere |
+| `Organization` (origen) | ✅ | IPS que genera la referencia |
+| `Organization` (EPS) | Recomendado | EPS del paciente |
+| `DiagnosticReport` | Si aplica | Resultados de exámenes |
+| `MedicationRequest` | Si aplica | Medicamentos activos |
+
+## Campos del Bundle
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `type` | `code` | `transaction` para envío, `document` para consulta |
+| `timestamp` | `instant` | Fecha/hora de creación del Bundle |
+| `entry` | `BackboneElement[]` | Lista de recursos incluidos |
+| `entry.fullUrl` | `uri` | URL del recurso dentro del Bundle |
+| `entry.resource` | `Resource` | El recurso FHIR |
+| `entry.request` | `BackboneElement` | Método HTTP para transacciones |
+
+## Ejemplo
+
+```json
+{
+  "resourceType": "Bundle",
+  "meta": {
+    "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedReferralBundle"]
+  },
+  "type": "transaction",
+  "timestamp": "2024-01-15T10:30:00-05:00",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-001",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://sofmed.co/fhir/CodeSystem/tipo-documento",
+                  "code": "CC"
+                }
+              ]
+            },
+            "value": "1234567890"
+          }
+        ],
+        "name": [{ "family": "García", "given": ["María"] }],
+        "gender": "female",
+        "birthDate": "1985-03-15"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:sr-001",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "status": "draft",
+        "intent": "order",
+        "subject": { "reference": "urn:uuid:patient-001" },
+        "requester": { "reference": "urn:uuid:pract-001" },
+        "code": {
+          "coding": [
+            {
+              "system": "https://sofmed.co/fhir/CodeSystem/cups",
+              "code": "890301"
+            }
+          ]
+        },
+        "reasonCode": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/sid/icd-10",
+                "code": "I10"
+              }
+            ]
+          }
+        ],
+        "authoredOn": "2024-01-15T10:30:00-05:00"
+      },
+      "request": {
+        "method": "POST",
+        "url": "ServiceRequest"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:enc-001",
+      "resource": {
+        "resourceType": "Encounter",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": { "reference": "urn:uuid:patient-001" },
+        "serviceProvider": { "reference": "urn:uuid:org-001" },
+        "period": {
+          "start": "2024-01-15T10:00:00-05:00",
+          "end": "2024-01-15T10:30:00-05:00"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Encounter"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:pract-001",
+      "resource": {
+        "resourceType": "Practitioner",
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://sofmed.co/fhir/CodeSystem/tipo-documento",
+                  "code": "CC"
+                }
+              ]
+            },
+            "value": "9876543210"
+          }
+        ],
+        "name": [{ "family": "López", "given": ["Carlos"], "prefix": ["Dr."] }]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Practitioner"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:org-001",
+      "resource": {
+        "resourceType": "Organization",
+        "identifier": [
+          {
+            "system": "https://sofmed.co/fhir/NamingSystem/nit",
+            "value": "900123456-7"
+          }
+        ],
+        "name": "Hospital San José",
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://sofmed.co/fhir/CodeSystem/tipo-organizacion",
+                "code": "ips"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Organization"
+      }
+    }
+  ]
+}
+```

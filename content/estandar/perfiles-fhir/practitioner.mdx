@@ -1,0 +1,89 @@
+---
+title: 'Practitioner'
+description: 'Perfil FHIR Practitioner para profesionales de salud en Sofmed Interop.'
+---
+
+# Practitioner
+
+## Descripción
+
+El perfil `SofmedPractitioner` representa un profesional de salud involucrado en el proceso de referencia o contrareferencia.
+
+**URL del perfil:** `https://sofmed.co/fhir/StructureDefinition/SofmedPractitioner`
+
+## Campos obligatorios
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `identifier` | `Identifier[]` | Documento de identidad y/o registro médico |
+| `name` | `HumanName[]` | Nombre del profesional |
+| `qualification` | `BackboneElement[]` | Especialidad o formación |
+
+## Campos recomendados
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `telecom` | `ContactPoint[]` | Contacto del profesional |
+| `active` | `boolean` | Si está activo |
+
+## Extensiones Sofmed
+
+### Registro médico
+
+```json
+{
+  "url": "https://sofmed.co/fhir/Extension/registro-medico",
+  "valueString": "RM-12345"
+}
+```
+
+## Ejemplo
+
+```json
+{
+  "resourceType": "Practitioner",
+  "meta": {
+    "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedPractitioner"]
+  },
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "https://sofmed.co/fhir/CodeSystem/tipo-documento",
+            "code": "CC",
+            "display": "Cédula de Ciudadanía"
+          }
+        ]
+      },
+      "value": "9876543210"
+    }
+  ],
+  "name": [
+    {
+      "family": "López Rodríguez",
+      "given": ["Carlos", "Andrés"],
+      "prefix": ["Dr."]
+    }
+  ],
+  "qualification": [
+    {
+      "code": {
+        "coding": [
+          {
+            "system": "https://sofmed.co/fhir/CodeSystem/especialidad",
+            "code": "medicina-general",
+            "display": "Medicina General"
+          }
+        ]
+      }
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://sofmed.co/fhir/Extension/registro-medico",
+      "valueString": "RM-12345"
+    }
+  ]
+}
+```

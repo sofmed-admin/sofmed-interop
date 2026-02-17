@@ -1,0 +1,113 @@
+---
+title: 'ServiceRequest — Solicitud de Referencia'
+description: 'Perfil FHIR ServiceRequest para solicitudes de referencia en Sofmed Interop.'
+---
+
+# ServiceRequest — Solicitud de Referencia
+
+## Descripción
+
+El perfil `SofmedServiceRequest` extiende el recurso FHIR `ServiceRequest` para representar una solicitud de referencia con los datos clínicos y administrativos necesarios.
+
+**URL del perfil:** `https://sofmed.co/fhir/StructureDefinition/SofmedServiceRequest`
+
+## Campos obligatorios
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `status` | `code` | Estado de la solicitud (`draft`, `active`, `on-hold`, `completed`, `revoked`) |
+| `intent` | `code` | Siempre `order` |
+| `subject` | `Reference(Patient)` | Paciente referido |
+| `requester` | `Reference(Practitioner)` | Médico que solicita la referencia |
+| `reasonCode` | `CodeableConcept[]` | Diagnóstico(s) CIE-10 |
+| `code` | `CodeableConcept` | Servicio solicitado (código CUPS) |
+| `authoredOn` | `dateTime` | Fecha de creación |
+
+## Campos recomendados
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `priority` | `code` | Prioridad (`routine`, `urgent`, `asap`, `stat`) |
+| `performer` | `Reference(Organization)` | IPS destino (asignada por la EPS) |
+| `note` | `Annotation[]` | Notas clínicas adicionales |
+| `supportingInfo` | `Reference[]` | Referencias a exámenes, imágenes, etc. |
+
+## Extensiones Sofmed
+
+### Motivo de referencia
+
+```json
+{
+  "url": "https://sofmed.co/fhir/Extension/motivo-referencia",
+  "valueCoding": {
+    "system": "https://sofmed.co/fhir/CodeSystem/motivo-referencia",
+    "code": "especialidad",
+    "display": "Requiere especialidad no disponible"
+  }
+}
+```
+
+### Número de autorización EPS
+
+```json
+{
+  "url": "https://sofmed.co/fhir/Extension/numero-autorizacion",
+  "valueString": "AUTH-2024-001234"
+}
+```
+
+## Ejemplo
+
+```json
+{
+  "resourceType": "ServiceRequest",
+  "meta": {
+    "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedServiceRequest"]
+  },
+  "status": "draft",
+  "intent": "order",
+  "priority": "urgent",
+  "code": {
+    "coding": [
+      {
+        "system": "https://sofmed.co/fhir/CodeSystem/cups",
+        "code": "890301",
+        "display": "Consulta de primera vez por medicina especializada"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/ejemplo-paciente"
+  },
+  "requester": {
+    "reference": "Practitioner/ejemplo-medico"
+  },
+  "reasonCode": [
+    {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/sid/icd-10",
+          "code": "I10",
+          "display": "Hipertensión esencial (primaria)"
+        }
+      ]
+    }
+  ],
+  "authoredOn": "2024-01-15T10:30:00-05:00",
+  "note": [
+    {
+      "text": "Paciente con hipertensión no controlada. Requiere valoración por cardiología."
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://sofmed.co/fhir/Extension/motivo-referencia",
+      "valueCoding": {
+        "system": "https://sofmed.co/fhir/CodeSystem/motivo-referencia",
+        "code": "especialidad",
+        "display": "Requiere especialidad no disponible"
+      }
+    }
+  ]
+}
+```

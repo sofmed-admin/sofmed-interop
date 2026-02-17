@@ -1,0 +1,43 @@
+{
+  "name": "sofmed-interop",
+  "version": "1.0.0",
+  "description": "Documentación del estándar Sofmed Interop — Interoperabilidad FHIR R4 para referencia y contrareferencia en Colombia",
+  "scripts": {
+    "dev": "next dev --port 3100",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sofmed-admin/sofmed-interop.git"
+  },
+  "keywords": [
+    "fhir",
+    "r4",
+    "interoperabilidad",
+    "referencia",
+    "contrareferencia",
+    "colombia",
+    "salud"
+  ],
+  "author": "Sofmed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sofmed-admin/sofmed-interop/issues"
+  },
+  "homepage": "https://docs.sofmed.co",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "next": "^16.1.6",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.14",
+    "typescript": "^5.9.3"
+  }
+}

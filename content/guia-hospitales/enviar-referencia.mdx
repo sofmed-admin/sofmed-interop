@@ -1,0 +1,86 @@
+---
+title: 'Enviar Referencia'
+description: 'Cómo enviar una referencia estandarizada desde un hospital o IPS.'
+---
+
+# Cómo Enviar una Referencia
+
+## Cuándo generar una referencia
+
+Se genera una referencia cuando el profesional de salud determina que el paciente necesita:
+- Una **especialidad** no disponible en la institución
+- Una **tecnología** o equipo no disponible
+- Atención de **mayor complejidad**
+- Un servicio que supera la **capacidad instalada** actual
+
+## Datos necesarios
+
+Para generar una referencia completa, necesitas reunir:
+
+### Del paciente
+- Documento de identidad (tipo y número)
+- Nombre completo
+- Fecha de nacimiento
+- EPS a la que está afiliado
+- Datos de contacto
+
+### De la atención
+- Diagnóstico principal (código CIE-10)
+- Diagnósticos relacionados
+- Resumen clínico
+- Resultados de exámenes relevantes
+- Medicamentos activos
+- Servicio solicitado (código CUPS)
+- Prioridad (rutina, urgente, emergencia)
+
+### Del remitente
+- Nombre del médico
+- Identificación y registro médico
+- IPS de origen
+
+## Paso a paso
+
+### 1. Construir el Bundle
+
+Tu sistema debe construir un [Bundle FHIR](/docs/estandar/perfiles-fhir/bundle) con todos los recursos necesarios.
+
+### 2. Validar localmente
+
+Antes de enviar, valida que:
+- Todos los campos obligatorios estén presentes
+- Los códigos (CUPS, CIE-10) sean válidos
+- Las referencias entre recursos sean correctas
+
+### 3. Enviar a la EPS
+
+```bash
+POST /fhir/Bundle
+Content-Type: application/fhir+json
+Authorization: Bearer {token}
+
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [...]
+}
+```
+
+### 4. Recibir confirmación
+
+La respuesta incluye los IDs asignados a cada recurso y el estado inicial `draft`.
+
+### 5. Hacer seguimiento
+
+Consulta periódicamente el estado de la referencia:
+
+```bash
+GET /fhir/ServiceRequest/{id}
+```
+
+## Errores comunes
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Datos incompletos | Faltan campos obligatorios | Revisar [perfil ServiceRequest](/docs/estandar/perfiles-fhir/service-request) |
+| Código inválido | CUPS o CIE-10 incorrecto | Validar contra [terminologías](/docs/estandar/terminologias) |
+| Paciente no identificado | Documento de identidad no coincide | Verificar datos del paciente |

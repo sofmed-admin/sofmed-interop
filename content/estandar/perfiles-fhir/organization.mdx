@@ -1,0 +1,113 @@
+---
+title: 'Organization — IPS / EPS'
+description: 'Perfil FHIR Organization para instituciones de salud colombianas.'
+---
+
+# Organization — IPS / EPS
+
+## Descripción
+
+El perfil `SofmedOrganization` representa una entidad del sistema de salud colombiano, ya sea una EPS o una IPS.
+
+**URL del perfil:** `https://sofmed.co/fhir/StructureDefinition/SofmedOrganization`
+
+## Campos obligatorios
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `identifier` | `Identifier[]` | NIT o código de habilitación |
+| `name` | `string` | Nombre de la organización |
+| `type` | `CodeableConcept[]` | Tipo de organización (EPS o IPS) |
+| `active` | `boolean` | Si está activa |
+
+## Campos recomendados
+
+| Campo | Tipo | Descripción |
+|-------|------|------------|
+| `telecom` | `ContactPoint[]` | Teléfono o correo institucional |
+| `address` | `Address[]` | Dirección de la sede |
+
+## Extensiones Sofmed
+
+### Nivel de complejidad (solo para IPS)
+
+```json
+{
+  "url": "https://sofmed.co/fhir/Extension/nivel-complejidad",
+  "valueCoding": {
+    "system": "https://sofmed.co/fhir/CodeSystem/nivel-complejidad",
+    "code": "3",
+    "display": "Alta complejidad"
+  }
+}
+```
+
+### Código de habilitación
+
+```json
+{
+  "url": "https://sofmed.co/fhir/Extension/codigo-habilitacion",
+  "valueString": "11001234567"
+}
+```
+
+## Tipos de organización
+
+| Código | Descripción |
+|--------|------------|
+| `eps` | Entidad Promotora de Salud |
+| `ips` | Institución Prestadora de Servicios de Salud |
+
+## Ejemplo — IPS
+
+```json
+{
+  "resourceType": "Organization",
+  "meta": {
+    "profile": ["https://sofmed.co/fhir/StructureDefinition/SofmedOrganization"]
+  },
+  "identifier": [
+    {
+      "system": "https://sofmed.co/fhir/NamingSystem/nit",
+      "value": "900123456-7"
+    }
+  ],
+  "active": true,
+  "type": [
+    {
+      "coding": [
+        {
+          "system": "https://sofmed.co/fhir/CodeSystem/tipo-organizacion",
+          "code": "ips",
+          "display": "Institución Prestadora de Servicios de Salud"
+        }
+      ]
+    }
+  ],
+  "name": "Hospital Universitario San Ignacio",
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "+5716015946161"
+    }
+  ],
+  "address": [
+    {
+      "line": ["Carrera 7 No. 40-62"],
+      "city": "Bogotá",
+      "state": "Cundinamarca",
+      "country": "CO"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://sofmed.co/fhir/Extension/nivel-complejidad",
+      "valueCoding": {
+        "system": "https://sofmed.co/fhir/CodeSystem/nivel-complejidad",
+        "code": "3",
+        "display": "Alta complejidad"
+      }
+    }
+  ]
+}
+```

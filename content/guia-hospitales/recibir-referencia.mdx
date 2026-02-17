@@ -1,0 +1,76 @@
+---
+title: 'Recibir Referencia'
+description: 'Cómo recibir y procesar una referencia en un hospital o IPS destino.'
+---
+
+# Cómo Recibir una Referencia
+
+## Flujo de recepción
+
+Cuando la EPS autoriza una referencia y asigna tu hospital como IPS destino, recibes un Bundle FHIR con toda la información del paciente.
+
+## Datos que recibirás
+
+El Bundle de referencia incluye:
+
+- **Patient** — Datos completos del paciente
+- **ServiceRequest** — Solicitud con diagnóstico, servicio y prioridad
+- **Encounter** — Encuentro clínico de origen
+- **Practitioner** — Médico remitente
+- **Organization** — IPS de origen
+- **Adjuntos** — Resultados de exámenes, imágenes (si aplica)
+
+## Paso a paso
+
+### 1. Recibir la notificación
+
+Tu sistema recibe el Bundle a través de:
+- **Push** — La EPS envía directamente a tu endpoint
+- **Pull** — Tu sistema consulta periódicamente las referencias asignadas
+
+```bash
+GET /fhir/ServiceRequest?performer=Organization/{tu-id}&status=active
+```
+
+### 2. Validar el Bundle
+
+Verifica que:
+- El Bundle contiene todos los recursos esperados
+- Los datos del paciente son legibles y completos
+- El servicio solicitado es ofertado por tu institución
+
+### 3. Confirmar recepción
+
+Actualiza el estado del ServiceRequest:
+
+```bash
+PUT /fhir/ServiceRequest/{id}
+
+{
+  "resourceType": "ServiceRequest",
+  "status": "accepted",
+  "...": "..."
+}
+```
+
+### 4. Integrar en tu sistema
+
+Importa los datos del paciente a tu sistema de historia clínica para que el equipo asistencial tenga acceso inmediato a:
+- Historia clínica resumida
+- Diagnósticos
+- Exámenes previos
+- Plan de tratamiento actual
+
+### 5. Atender al paciente
+
+Realiza la atención especializada con el contexto completo del caso.
+
+### 6. Generar contrareferencia
+
+Una vez finalizada la atención, genera la [contrareferencia](/docs/guia-hospitales/contrareferencia).
+
+## Mejores prácticas
+
+- **No repitas exámenes** innecesariamente si los resultados vienen en el Bundle
+- **Documenta** todo en el Encounter de atención
+- **Genera la contrareferencia** lo antes posible para cerrar el ciclo

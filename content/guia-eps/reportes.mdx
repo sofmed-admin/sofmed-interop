@@ -1,0 +1,60 @@
+---
+title: 'Reportes'
+description: 'Reportes e indicadores disponibles para EPS con Sofmed Interop.'
+---
+
+# Reportes e Indicadores
+
+## Ventaja de datos estandarizados
+
+Al usar FHIR como formato estándar, todos los datos de referencia y contrareferencia son estructurados y consistentes, lo que permite generar reportes confiables y comparables.
+
+## Indicadores operativos
+
+### Volumen de referencias
+
+| Indicador | Descripción |
+|-----------|------------|
+| Total de referencias | Número total de ServiceRequests creados en un período |
+| Referencias por IPS | Agrupación por IPS origen |
+| Referencias por especialidad | Agrupación por código CUPS solicitado |
+| Referencias por diagnóstico | Agrupación por código CIE-10 |
+
+### Tiempos de gestión
+
+| Indicador | Descripción |
+|-----------|------------|
+| Tiempo de autorización | Tiempo entre `draft` y `active` |
+| Tiempo de asignación | Tiempo entre autorización y aceptación por IPS destino |
+| Tiempo de atención | Tiempo entre `accepted` y `completed` |
+| Tiempo total del ciclo | Tiempo entre `draft` y contrareferencia recibida |
+
+### Calidad
+
+| Indicador | Descripción |
+|-----------|------------|
+| Tasa de rechazo | Porcentaje de referencias rechazadas |
+| Tasa de información incompleta | Referencias puestas en `on-hold` |
+| Tasa de contrareferencia | Porcentaje de referencias con contrareferencia registrada |
+
+## Reportes sugeridos
+
+### Reporte mensual de gestión
+
+Incluye:
+- Total de referencias recibidas, autorizadas, rechazadas
+- Tiempos promedio de cada etapa
+- Top 10 IPS por volumen de referencias
+- Top 10 diagnósticos más referidos
+- Top 10 servicios más solicitados
+
+### Reporte de oportunidad
+
+Enfocado en:
+- Referencias que superaron los tiempos máximos
+- Cuellos de botella por IPS o servicio
+- Tendencias de tiempos a lo largo del tiempo
+
+## Generación de reportes
+
+Los datos para estos reportes se obtienen consultando la API FHIR con los parámetros de búsqueda adecuados. Consulta la [guía de endpoints](/docs/guia-desarrolladores/endpoints) para más detalles.
